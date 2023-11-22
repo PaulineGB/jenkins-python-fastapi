@@ -5,8 +5,8 @@ pipeline {
         DOCKER_TAG = "v.${BUILD_ID}.0"
     }
     stages {
-        parallel(
-            'Fastapi casts' {
+        parallel {
+            stage ('Fastapi casts') {
                 agent {
                     docker {
                         image = "jenkins_fastapi_casts"
@@ -50,7 +50,7 @@ pipeline {
                 }
 
             },
-            'Fastapi movies' : {
+            stage ('Fastapi movies') {
                 agent {
                     docker {
                         image = "jenkins_fastapi_movies"
@@ -93,7 +93,7 @@ pipeline {
                     }
                 }
             }
-        )
+        }
         stage('Dev deployment') {
             environment {
                 KUBECONFIG = credentials("config")
