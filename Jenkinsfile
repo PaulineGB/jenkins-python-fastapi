@@ -10,12 +10,8 @@ pipeline {
                 stage ('Fastapi casts') {
                     environment
                     {
+                        DOCKER_IMAGE = "jenkins_fastapi_casts"
                         DOCKER_PASS = credentials("DOCKER_HUB_PASS")
-                    }
-                    agent {
-                        docker {
-                            image "jenkins_fastapi_casts"
-                        }
                     }
                     steps {
                         script(' Docker Build') {
@@ -47,12 +43,8 @@ pipeline {
                 stage ('Fastapi movies') {
                     environment
                     {
+                        DOCKER_IMAGE = "jenkins_fastapi_movies"
                         DOCKER_PASS = credentials("DOCKER_HUB_PASS")
-                    }
-                    agent {
-                        docker {
-                            image "jenkins_fastapi_movies"
-                        }
                     }
                     steps {
                         script(' Docker Build') {
