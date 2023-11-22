@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage('Docker build images') {
             parallel {
-                stage ('Fastapi casts') {
+                stage ('main/cast-service') {
                     environment
                     {
                         DOCKER_IMAGE = "jenkins_fastapi_casts"
@@ -40,7 +40,7 @@ pipeline {
                         }
                     }
                 }
-                stage ('Fastapi movies') {
+                stage ('main/movie-service') {
                     environment
                     {
                         DOCKER_IMAGE = "jenkins_fastapi_movies"
