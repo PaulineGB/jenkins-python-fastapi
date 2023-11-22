@@ -8,104 +8,76 @@ pipeline {
         stage('Docker build images') {
             parallel {
                 stage ('Fastapi casts') {
+                    environment
+                    {
+                        DOCKER_PASS = credentials("DOCKER_HUB_PASS")
+                    }
                     agent {
                         docker {
                             image = "jenkins_fastapi_casts"
                         }
                     }
-                    stage(' Docker Build') {
-                        steps {
-                            script {
-                                sh '''
-                                docker rm -f jenkins
-                                docker build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
-                                sleep 6
-                                '''
-                            }
+                    steps {
+                        script(' Docker Build') {
+                            sh '''
+                            docker rm -f jenkins
+                            docker build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
+                            sleep 6
+                            '''
                         }
-                    }
-                    stage('Docker run') {
-                        steps {
-                            script {
+                        script('Docker run') {
                                 sh '''
                                 docker run -d -p 80:80 --name jenkins $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
                                 sleep 10
                                 '''
-                            }
                         }
-                    }
-                    stage('Test Acceptance') {
-                        steps {
-                            script {
+                        script('Test Acceptance') {
                                 sh '''
                                 curl localhost
                                 '''
-                            }
                         }
-                    }
-                    stage('Docker Push') {
-                        environment
-                        {
-                            DOCKER_PASS = credentials("DOCKER_HUB_PASS")
-                        }
-                        steps{
-                            script {
+                        script('Docker Push') {
                                 sh '''
                                 docker login -u $DOCKER_ID -p $DOCKER_PASS
                                 docker push $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
                                 '''
-                            }
                         }
                     }
                 }
                 stage ('Fastapi movies') {
+                    environment
+                    {
+                        DOCKER_PASS = credentials("DOCKER_HUB_PASS")
+                    }
                     agent {
                         docker {
                             image = "jenkins_fastapi_movies"
                         }
                     }
-                    stage(' Docker Build') {
-                        steps {
-                            script {
-                                sh '''
-                                docker rm -f jenkins
-                                docker build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
-                                sleep 6
-                                '''
-                            }
+                    steps {
+                        script(' Docker Build') {
+                            sh '''
+                            docker rm -f jenkins
+                            docker build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
+                            sleep 6
+                            '''
                         }
-                    }
-                    stage('Docker run') {
-                        steps {
-                            script {
-                                sh '''
-                                docker run -d -p 80:80 --name jenkins $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
-                                sleep 10
-                                '''
-                            }
+                        script('Docker run') {
+                            sh '''
+                            docker run -d -p 80:80 --name jenkins $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
+                            sleep 10
+                            '''
                         }
-                    }
-                    stage('Test Acceptance') {
-                        steps {
-                            script {
-                                sh '''
-                                curl localhost
-                                '''
-                            }
+                        script('Test Acceptance') {
+                            sh '''
+                            curl localhost
+                            '''
                         }
-                    }
-                    stage('Docker Push') {
-                        environment
-                        {
-                            DOCKER_PASS = credentials("DOCKER_HUB_PASS")
-                        }
-                        steps{
-                            script {
-                                sh '''
-                                docker login -u $DOCKER_ID -p $DOCKER_PASS
-                                docker push $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
-                                '''
-                            }
+                        script('Docker Push') {
+                            sh '''
+                            docker login -u $DOCKER_ID -p $DOCKER_PASS
+                            docker push $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
+                            '''
                         }
                     }
                 }
