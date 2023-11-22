@@ -5,7 +5,7 @@ pipeline {
         DOCKER_TAG = "v.${BUILD_ID}.0"
     }
     stages {
-        parallel {
+        parallel : 'Fastapi casts' {
             stage ('Fastapi casts') {
                 agent {
                     docker {
@@ -49,7 +49,7 @@ pipeline {
                     }
                 }
 
-            }
+            }}, 'Fastapi movies' : {
             stage ('Fastapi movies') {
                 agent {
                     docker {
