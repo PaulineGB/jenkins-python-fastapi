@@ -16,8 +16,6 @@ pipeline {
                     steps {
                         script {
                             sh '''
-                            export DOCKER_BUILDKIT=0
-                            export COMPOSE_DOCKER_CLI_BUILD=0
                             docker image build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
                             sleep 6
                             '''
@@ -49,8 +47,6 @@ pipeline {
                     steps {
                         script {
                             sh '''
-                            export DOCKER_BUILDKIT=0
-                            export COMPOSE_DOCKER_CLI_BUILD=0
                             docker image build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
                             sleep 6
                             '''
