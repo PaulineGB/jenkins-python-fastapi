@@ -14,7 +14,7 @@ pipeline {
                     }
                     agent {
                         docker {
-                            image = "jenkins_fastapi_casts"
+                            image "jenkins_fastapi_casts"
                         }
                     }
                     steps {
@@ -51,7 +51,7 @@ pipeline {
                     }
                     agent {
                         docker {
-                            image = "jenkins_fastapi_movies"
+                            image "jenkins_fastapi_movies"
                         }
                     }
                     steps {
