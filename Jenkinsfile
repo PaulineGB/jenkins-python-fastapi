@@ -6,7 +6,7 @@ pipeline {
     }
     stages {
         parallel {
-            stage('Fastapi casts') {
+            stage ('Fastapi casts') {
                 agent {
                     docker {
                         image = "jenkins_fastapi_casts"
@@ -50,7 +50,7 @@ pipeline {
                 }
 
             }
-            stage('Fastapi movies') {
+            stage ('Fastapi movies') {
                 agent {
                     docker {
                         image = "jenkins_fastapi_movies"
