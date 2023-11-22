@@ -49,7 +49,7 @@ pipeline {
                     }
                 }
 
-            },
+            }
             stage ('Fastapi movies') {
                 agent {
                     docker {
