@@ -3,6 +3,7 @@ pipeline {
     environment {
         DOCKER_ID = "p0l1na"
         DOCKER_TAG = "v.${BUILD_ID}.0"
+        DOCKER_PASS = credentials("DOCKER_HUB_PASS")
     }
     stages {
         stage('Docker build images') {
@@ -11,7 +12,6 @@ pipeline {
                     environment
                     {
                         DOCKER_IMAGE = "jenkins_fastapi_casts"
-                        DOCKER_PASS = credentials("DOCKER_HUB_PASS")
                     }
                     steps {
                         script(' Docker Build') {
@@ -44,7 +44,6 @@ pipeline {
                     environment
                     {
                         DOCKER_IMAGE = "jenkins_fastapi_movies"
-                        DOCKER_PASS = credentials("DOCKER_HUB_PASS")
                     }
                     steps {
                         script(' Docker Build') {
