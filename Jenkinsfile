@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent 
     environment {
         DOCKER_ID = "p0l1na"
         DOCKER_TAG = "v.${BUILD_ID}.0"
@@ -16,7 +16,9 @@ pipeline {
                     steps {
                         script {
                             sh '''
-                            docker rm -f jenkins
+                            if [ $( docker ps -a | grep jenkins | wc -l ) -gt 0 ]; then
+                               docker rm -f jenkins
+                            fi
                             docker build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
                             sleep 6
                             '''
@@ -35,7 +37,7 @@ pipeline {
                         script {
                                 sh '''
                                 docker login -u $DOCKER_ID -p $DOCKER_PASS
-                                docker push $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
+                                docker image push $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
                                 '''
                         }
                     }
@@ -48,7 +50,9 @@ pipeline {
                     steps {
                         script {
                             sh '''
-                            docker rm -f jenkins
+                            if [ $( docker ps -a | grep jenkins | wc -l ) -gt 0 ]; then
+                               docker rm -f jenkins
+                            fi
                             docker build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
                             sleep 6
                             '''
@@ -67,7 +71,7 @@ pipeline {
                         script {
                             sh '''
                             docker login -u $DOCKER_ID -p $DOCKER_PASS
-                            docker push $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
+                            docker image push $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
                             '''
                         }
                     }
