@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent none
     environment {
         DOCKER_ID = "p0l1na"
         DOCKER_TAG = "v.${BUILD_ID}.0"
@@ -7,8 +7,10 @@ pipeline {
     stages {
         stage(' Docker Build') {
             steps {
-                environment {
-                    DOCKER_IMAGE = "jenkins_fastapi_casts"
+                agent {
+                    docker {
+                        image = "jenkins_fastapi_casts"
+                    }
                 }
                 script {
                     sh '''
@@ -19,8 +21,10 @@ pipeline {
                 }
             }
             steps {
-                environment {
-                    DOCKER_IMAGE = "jenkins_fastapi_movies"
+                agent {
+                    docker {
+                        image = "jenkins_fastapi_movies"
+                    }
                 }
                 script {
                     sh '''
@@ -33,8 +37,10 @@ pipeline {
         }
         stage('Docker run') {
             steps {
-                environment {
-                    DOCKER_IMAGE = "jenkins_fastapi_casts"
+                agent {
+                    docker {
+                        image = "jenkins_fastapi_casts"
+                    }
                 }
                 script {
                     sh '''
@@ -44,8 +50,10 @@ pipeline {
                 }
             }
             steps {
-                environment {
-                    DOCKER_IMAGE = "jenkins_fastapi_movies"
+                agent {
+                    docker {
+                        image = "jenkins_fastapi_movies"
+                    }
                 }
                 script {
                     sh '''
@@ -57,8 +65,10 @@ pipeline {
         }
         stage('Test Acceptance') {
             steps {
-                environment {
-                    DOCKER_IMAGE = "jenkins_fastapi_casts"
+                agent {
+                    docker {
+                        image = "jenkins_fastapi_casts"
+                    }
                 }
                 script {
                     sh '''
@@ -67,8 +77,10 @@ pipeline {
                 }
             }
             steps {
-                environment {
-                    DOCKER_IMAGE = "jenkins_fastapi_movies"
+                agent {
+                    docker {
+                        image = "jenkins_fastapi_movies"
+                    }
                 }
                 script {
                     sh '''
@@ -83,8 +95,10 @@ pipeline {
                 DOCKER_PASS = credentials("DOCKER_HUB_PASS")
             }
             steps {
-                environment {
-                    DOCKER_IMAGE = "jenkins_fastapi_casts"
+                agent {
+                    docker {
+                        image = "jenkins_fastapi_casts"
+                    }
                 }
                 script {
                     sh '''
@@ -94,8 +108,10 @@ pipeline {
                 }
             }
             steps {
-                environment {
-                    DOCKER_IMAGE = "jenkins_fastapi_movies"
+                agent {
+                    docker {
+                        image = "jenkins_fastapi_movies"
+                    }
                 }
                 script {
                     sh '''
@@ -110,8 +126,10 @@ pipeline {
                 KUBECONFIG = credentials("config")
             }
             steps {
-                environment {
-                    DOCKER_IMAGE = "jenkins_fastapi_casts"
+                agent {
+                    docker {
+                        image = "jenkins_fastapi_casts"
+                    }
                 }
                 script {
                     sh '''
@@ -127,8 +145,10 @@ pipeline {
                 }
             }
             steps {
-                environment {
-                    DOCKER_IMAGE = "jenkins_fastapi_movies"
+                agent{
+                    docker {
+                        image = "jenkins_fastapi_movies"
+                    }
                 }
                 script {
                     sh '''
@@ -149,8 +169,10 @@ pipeline {
                 KUBECONFIG = credentials("config")
             }
             steps {
-                environment {
-                    DOCKER_IMAGE = "jenkins_fastapi_casts"
+                agent {
+                    docker {
+                        image = "jenkins_fastapi_casts"
+                    }
                 }
                 script {
                     sh '''
@@ -166,8 +188,10 @@ pipeline {
                 }
             }
             steps {
-                environment {
-                    DOCKER_IMAGE = "jenkins_fastapi_movies"
+                agent {
+                    docker {
+                        image = "jenkins_fastapi_movies"
+                    }
                 }
                 script {
                     sh '''
@@ -188,8 +212,10 @@ pipeline {
                 KUBECONFIG = credentials("config")
             }
             steps {
-                environment {
-                    DOCKER_IMAGE = "jenkins_fastapi_casts"
+                agent {
+                    docker {
+                        image = "jenkins_fastapi_casts"
+                    }
                 }
                 script {
                     sh '''
@@ -205,8 +231,10 @@ pipeline {
                 }
             }
             steps {
-                environment {
-                    DOCKER_IMAGE = "jenkins_fastapi_movies"
+                agent {
+                    docker {
+                        image = "jenkins_fastapi_movies"
+                    }
                 }
                 script {
                     sh '''
@@ -227,8 +255,10 @@ pipeline {
                 KUBECONFIG = credentials("config")
             }
             steps {
-                environment {
-                    DOCKER_IMAGE = "jenkins_fastapi_casts"
+                agent {
+                    docker {
+                        image = "jenkins_fastapi_casts"
+                    }
                 }
                 timeout(time: 15, unit: "MINUTES") {
                     input message: 'Do you want to deploy in production ?', ok: 'Yes'
@@ -247,8 +277,10 @@ pipeline {
                 }
             }
             steps {
-                environment {
-                    DOCKER_IMAGE = "jenkins_fastapi_movies"
+                agent {
+                    docker {
+                        DOCKER_IMAGE = "jenkins_fastapi_movies"
+                    }
                 }
                 timeout(time: 15, unit: "MINUTES") {
                     input message: 'Do you want to deploy in production ?', ok: 'Yes'
