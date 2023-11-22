@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any
     environment {
         DOCKER_ID = "p0l1na"
         DOCKER_TAG = "v.${BUILD_ID}.0"
