@@ -4,12 +4,11 @@ pipeline {
         DOCKER_ID = "p0l1na"
         DOCKER_TAG = "v.${BUILD_ID}.0"
         DOCKER_PASS = credentials("DOCKER_HUB_PASS")
-        DOCKER_BUILDKIT = 1
     }
     stages {
         stage('Docker build images') {
             parallel {
-                stage ('tree/main/cast-service') {
+                stage ('main/cast-service') {
                     environment
                     {
                         DOCKER_IMAGE = "jenkins_fastapi_casts"
@@ -40,7 +39,7 @@ pipeline {
                         }
                     }
                 }
-                stage ('tree/main/movie-service') {
+                stage ('main/movie-service') {
                     environment
                     {
                         DOCKER_IMAGE = "jenkins_fastapi_movies"
