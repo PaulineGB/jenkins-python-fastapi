@@ -7,7 +7,7 @@ pipeline {
     }
     stages {
         stage('Docker build images') {
-            parallel {
+            stages {
                 stage ('main/cast-service') {
                     environment
                     {
