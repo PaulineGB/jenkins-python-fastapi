@@ -4,6 +4,7 @@ pipeline {
         DOCKER_ID = "p0l1na"
         DOCKER_TAG = "v.${BUILD_ID}.0"
         DOCKER_PASS = credentials("DOCKER_HUB_PASS")
+        BUILDKIT_PROGRESS = plain
     }
     stages {
         stage('Docker build images') {
