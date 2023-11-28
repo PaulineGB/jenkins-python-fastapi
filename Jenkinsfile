@@ -1,3 +1,5 @@
+// AJOUT DE DOCKER RUN NGINX, DB CASTS, DB MOVIES
+
 pipeline {
     agent any
     environment {
@@ -8,7 +10,7 @@ pipeline {
     stages {
         stage('Docker build images') {
             stages {
-                stage ('main/cast-service') {
+                stage ('casts service') {
                     environment
                     {
                         DOCKER_IMAGE = "jenkins_fastapi_casts"
@@ -16,7 +18,7 @@ pipeline {
                     steps {
                         script {
                             sh '''
-                            docker image build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
+                            docker build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
                             sleep 6
                             '''
                         }
@@ -34,12 +36,12 @@ pipeline {
                         script {
                             sh '''
                             docker login -u $DOCKER_ID -p $DOCKER_PASS
-                            docker image push $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
+                            docker push $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
                             '''
                         }
                     }
                 }
-                stage ('main/movie-service') {
+                stage ('movies service') {
                     environment
                     {
                         DOCKER_IMAGE = "jenkins_fastapi_movies"
@@ -47,7 +49,7 @@ pipeline {
                     steps {
                         script {
                             sh '''
-                            docker image build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
+                            docker build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
                             sleep 6
                             '''
                         }
