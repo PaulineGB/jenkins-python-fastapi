@@ -13,7 +13,9 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    docker rm -f cast-service movie-service movie-db cast-db nginx
+                    if [ $( docker ps -a | grep cast-service movie-service movie-db cast-db nginx | wc -l ) -gt 0 ]; then
+                        docker rm -f cast-service movie-service movie-db cast-db nginx
+                    fi
                     docker build -t $DOCKER_ID/$DOCKER_CASTS_IMAGE:$DOCKER_TAG .
                     docker build -t $DOCKER_ID/$DOCKER_MOVIES_IMAGE:$DOCKER_TAG .
                     sleep 6
