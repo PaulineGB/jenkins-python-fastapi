@@ -5,8 +5,8 @@ pipeline {
         DOCKER_ID = "p0l1na"
         DOCKER_TAG = "v.${BUILD_ID}.0"
         DOCKER_PASS = credentials("DOCKER_HUB_PASS")
-        DOCKER_CASTS_IMAGE = "jenkins_fastapi_casts"
-        DOCKER_MOVIES_IMAGE = "jenkins_fastapi_movies"
+        DOCKER_CAST_IMAGE = "cast-service"
+        DOCKER_MOVIE_IMAGE = "movie-service"
     }
     stages {
         stage('Docker Build') {
@@ -16,8 +16,8 @@ pipeline {
                     if [ $( docker ps -a | grep cast-service movie-service movie-db cast-db nginx | wc -l ) -gt 0 ]; then
                         docker rm -f cast-service movie-service movie-db cast-db nginx
                     fi
-                    docker build -t $DOCKER_ID/$DOCKER_CASTS_IMAGE:$DOCKER_TAG .
-                    docker build -t $DOCKER_ID/$DOCKER_MOVIES_IMAGE:$DOCKER_TAG .
+                    docker build -t $DOCKER_ID/$DOCKER_CAST_IMAGE:$DOCKER_TAG .
+                    docker build -t $DOCKER_ID/$DOCKER_MOVIE_IMAGE:$DOCKER_TAG .
                     sleep 6
                     '''
                 }
@@ -43,13 +43,13 @@ pipeline {
                         -p 8002:8000 /
                         -e DATABASE_URI=postgresql://cast_db_user:cast_db_password@cast-db:5432/cast_db /
                         --link cast-db /
-                        $DOCKER_ID/$DOCKER_CASTS_IMAGE:$DOCKER_TAG
+                        $DOCKER_ID/$DOCKER_CAST_IMAGE:$DOCKER_TAG
                     docker run -d --name movie-service
                         -p 8001:8000 /
                         -e DATABASE_URI=postgresql://movie_db_user:movie_db_password@movie-db:5432/movie_db /
                         -e CAST_SERVICE_HOST_URL=http://cast_service:8000/api/v1/casts/
                         --link movie-db /
-                        $DOCKER_ID/$DOCKER_MOVIES_IMAGE:$DOCKER_TAG
+                        $DOCKER_ID/$DOCKER_MOVIE_IMAGE:$DOCKER_TAG
                     docker run -d --name nginx
                         -p 80:8080 /
                         -v /home/ubuntu/nginx.conf:/etc/nginx/nginx.conf /
@@ -75,8 +75,8 @@ pipeline {
                 script {
                     sh '''
                     docker login -u $DOCKER_ID -p $DOCKER_PASS
-                    docker push $DOCKER_ID/$DOCKER_MOVIES:$DOCKER_TAG
-                    docker push $DOCKER_ID/$DOCKER_CASTS:$DOCKER_TAG
+                    docker push $DOCKER_ID/$DOCKER_MOVIE_IMAGE:$DOCKER_TAG
+                    docker push $DOCKER_ID/$DOCKER_CAST_IMAGE:$DOCKER_TAG
                     '''
                 }
             }
