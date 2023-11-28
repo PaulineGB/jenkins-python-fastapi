@@ -6,8 +6,7 @@ replicaCount: 1
 
 image:
   repository: p0l1na/jenkins_fastapi_casts
-  pullPolicy: IfNotPresent
-  tag: "latest"
+  tag: ""
 
 service:
   type: ClusterIP

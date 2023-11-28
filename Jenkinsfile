@@ -1,78 +1,84 @@
 // AJOUT DE DOCKER RUN NGINX, DB CASTS, DB MOVIES
-
 pipeline {
     agent any
     environment {
         DOCKER_ID = "p0l1na"
         DOCKER_TAG = "v.${BUILD_ID}.0"
         DOCKER_PASS = credentials("DOCKER_HUB_PASS")
+        DOCKER_CASTS_IMAGE = "jenkins_fastapi_casts"
+        DOCKER_MOVIES_IMAGE = "jenkins_fastapi_movies"
     }
     stages {
-        stage('Docker build images') {
-            stages {
-                stage ('casts service') {
-                    environment
-                    {
-                        DOCKER_IMAGE = "jenkins_fastapi_casts"
-                    }
-                    steps {
-                        script {
-                            sh '''
-                            docker build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
-                            sleep 6
-                            '''
-                        }
-                        script {
-                            sh '''
-                            docker run -d -p 80:80 --name $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
-                            sleep 10
-                            '''
-                        }
-                        script {
-                            sh '''
-                            curl localhost
-                            '''
-                        }
-                        script {
-                            sh '''
-                            docker login -u $DOCKER_ID -p $DOCKER_PASS
-                            docker push $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
-                            '''
-                        }
-                    }
-                }
-                stage ('movies service') {
-                    environment
-                    {
-                        DOCKER_IMAGE = "jenkins_fastapi_movies"
-                    }
-                    steps {
-                        script {
-                            sh '''
-                            docker build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
-                            sleep 6
-                            '''
-                        }
-                        script {
-                            sh '''
-                            docker run -d -p 80:80 --name $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
-                            sleep 10
-                            '''
-                        }
-                        script {
-                            sh '''
-                            curl localhost
-                            '''
-                        }
-                        script {
-                            sh '''
-                            docker login -u $DOCKER_ID -p $DOCKER_PASS
-                            docker image push $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
-                            '''
-                        }
-                    }
+        stage('Docker Build') {
+            steps {
+                script {
+                    sh '''
+                    docker rm -f cast-service movie-service movie-db cast-db nginx
+                    docker build -t $DOCKER_ID/$DOCKER_CASTS_IMAGE:$DOCKER_TAG .
+                    docker build -t $DOCKER_ID/$DOCKER_MOVIES_IMAGE:$DOCKER_TAG .
+                    sleep 6
+                    '''
                 }
             }
+        }
+        stage('Docker run') {
+            steps {
+                script {
+                    sh '''
+                    docker run -d --name cast-db /
+                        -v postgres_data_cast:/var/lib/postgresql/data/ /
+                        -e POSTGRES_USER=cast_db_user /
+                        -e POSTGRES_PASSWORD=cast_db_password /
+                        -e POSTGRES_DB=cast_db /
+                        postgres:12.1-alpine
+                    docker run -d --name movie-db /
+                        -v postgres_data_movie:/var/lib/postgresql/data/ /
+                        -e POSTGRES_USER=movie_db_user /
+                        -e POSTGRES_PASSWORD=movie_db_password /
+                        -e POSTGRES_DB=movie_db /
+                        postgres:12.1-alpine
+                    docker run -d --name cast-service
+                        -p 8002:8000 /
+                        -e DATABASE_URI=postgresql://cast_db_user:cast_db_password@cast-db:5432/cast_db /
+                        --link cast-db /
+                        $DOCKER_ID/$DOCKER_CASTS_IMAGE:$DOCKER_TAG
+                    docker run -d --name movie-service
+                        -p 8001:8000 /
+                        -e DATABASE_URI=postgresql://movie_db_user:movie_db_password@movie-db:5432/movie_db /
+                        -e CAST_SERVICE_HOST_URL=http://cast_service:8000/api/v1/casts/
+                        --link movie-db /
+                        $DOCKER_ID/$DOCKER_MOVIES_IMAGE:$DOCKER_TAG
+                    docker run -d --name nginx
+                        -p 80:8080 /
+                        -v /home/ubuntu/nginx.conf:/etc/nginx/nginx.conf /
+                        --link movie-service /
+                        --link cast-service /
+                        nginx:1.17.6-alpine
+                    sleep 10
+                    '''
+                }
+            }
+        }
+        stage('Test Acceptance') {
+            steps {
+                script {
+                    sh '''
+                    curl localhost
+                    '''
+                }
+            }
+        }
+        stage('Docker Push') {
+            steps {
+                script {
+                    sh '''
+                    docker login -u $DOCKER_ID -p $DOCKER_PASS
+                    docker push $DOCKER_ID/$DOCKER_MOVIES:$DOCKER_TAG
+                    docker push $DOCKER_ID/$DOCKER_CASTS:$DOCKER_TAG
+                    '''
+                }
+            }
+
         }
         stage('Dev deployment') {
             environment {
@@ -83,12 +89,12 @@ pipeline {
                     sh '''
                     rm -Rf .kube
                     mkdir .kube
-                    ls
                     cat $KUBECONFIG > .kube/config
-                    cp fastapi/values.yaml values.yml
-                    cat values.yml
-                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install app fastapi --values=values.yml --namespace dev
+                    helm -n dev upgrade --install movie-db --values=movie-db-helm/values.yml
+                    helm -n dev upgrade --install cast-db --values=cast-db-helm/values.yml
+                    helm -n dev upgrade --install movie-service --values=movie-helm/values.yml
+                    helm -n dev upgrade --install cast-service --values=cast-helm/values.yml
+                    helm -n dev upgrade --install nginx --values=nginx-helm/values.yml
                     '''
                 }
             }
@@ -102,12 +108,12 @@ pipeline {
                     sh '''
                     rm -Rf .kube
                     mkdir .kube
-                    ls
                     cat $KUBECONFIG > .kube/config
-                    cp fastapi/values.yaml values.yml
-                    cat values.yml
-                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install app fastapi --values=values.yml --namespace qa
+                    helm -n qa upgrade --install movie-db --values=movie-db-helm/values.yml
+                    helm -n qa upgrade --install cast-db --values=cast-db-helm/values.yml
+                    helm -n qa upgrade --install movie-service --values=movie-helm/values.yml
+                    helm -n qa upgrade --install cast-service --values=cast-helm/values.yml
+                    helm -n qa upgrade --install nginx --values=nginx-helm/values.yml
                     '''
                 }
             }
@@ -121,12 +127,12 @@ pipeline {
                     sh '''
                     rm -Rf .kube
                     mkdir .kube
-                    ls
                     cat $KUBECONFIG > .kube/config
-                    cp fastapi/values.yaml values.yml
-                    cat values.yml
-                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install app fastapi --values=values.yml --namespace staging
+                    helm -n staging upgrade --install movie-db --values=movie-db-helm/values.yml
+                    helm -n staging upgrade --install cast-db --values=cast-db-helm/values.yml
+                    helm -n staging upgrade --install movie-service --values=movie-helm/values.yml
+                    helm -n staging upgrade --install cast-service --values=cast-helm/values.yml
+                    helm -n staging upgrade --install nginx --values=nginx-helm/values.yml
                     '''
                 }
             }
@@ -143,12 +149,12 @@ pipeline {
                     sh '''
                     rm -Rf .kube
                     mkdir .kube
-                    ls
                     cat $KUBECONFIG > .kube/config
-                    cp fastapi/values.yaml values.yml
-                    cat values.yml
-                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install app fastapi --values=values.yml --namespace prod
+                    helm -n prod upgrade --install movie-db --values=movie-db-helm/values.yml
+                    helm -n prod upgrade --install cast-db --values=cast-db-helm/values.yml
+                    helm -n prod upgrade --install movie-service --values=movie-helm/values.yml
+                    helm -n prod upgrade --install cast-service --values=cast-helm/values.yml
+                    helm -n prod upgrade --install nginx --values=nginx-helm/values.yml
                     '''
                 }
             }
