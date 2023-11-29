@@ -5,7 +5,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}}
+      app: {{ .Chart.Name }}
   serviceName: {{ .Chart.Name }}
   replicas: 1
   template:
