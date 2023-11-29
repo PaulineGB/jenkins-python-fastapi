@@ -105,11 +105,11 @@ pipeline {
                     rm -Rf .kube
                     mkdir .kube
                     cat $KUBECONFIG > .kube/config
-                    helm -n dev upgrade --install movie-db --values=movie-db-helm/values.yml
-                    helm -n dev upgrade --install cast-db --values=cast-db-helm/values.yml
-                    helm -n dev upgrade --install movie-service --values=movie-helm/values.yml
-                    helm -n dev upgrade --install cast-service --values=cast-helm/values.yml
-                    helm -n dev upgrade --install nginx-service --values=nginx-helm/values.yml
+                    helm -n dev upgrade --install movie-db --values movie-db-helm/values.yml movie-db-helm/
+                    helm -n dev upgrade --install cast-db --values cast-db-helm/values.yml cast-db-helm/
+                    helm -n dev upgrade --install movie-service --values movie-helm/values.yml movie-helm/
+                    helm -n dev upgrade --install cast-service --values cast-helm/values.yml cast-helm/
+                    helm -n dev upgrade --install nginx-service --values nginx-helm/values.yml nginx-helm/
                     '''
                 }
             }
@@ -124,11 +124,11 @@ pipeline {
                     rm -Rf .kube
                     mkdir .kube
                     cat $KUBECONFIG > .kube/config
-                    helm -n qa upgrade --install movie-db --values=movie-db-helm/values.yml
-                    helm -n qa upgrade --install cast-db --values=cast-db-helm/values.yml
-                    helm -n qa upgrade --install movie-service --values=movie-helm/values.yml
-                    helm -n qa upgrade --install cast-service --values=cast-helm/values.yml
-                    helm -n qa upgrade --install nginx-service --values=nginx-helm/values.yml
+                    helm -n qa upgrade --install movie-db --values movie-db-helm/values.yml movie-db-helm/
+                    helm -n qa upgrade --install cast-db --values cast-db-helm/values.yml cast-db-helm/
+                    helm -n qa upgrade --install movie-service --values movie-helm/values.yml movie-helm/
+                    helm -n qa upgrade --install cast-service  --values cast-helm/values.yml cast-helm/
+                    helm -n qa upgrade --install nginx-service --values nginx-helm/values.yml nginx-helm/
                     '''
                 }
             }
@@ -143,11 +143,11 @@ pipeline {
                     rm -Rf .kube
                     mkdir .kube
                     cat $KUBECONFIG > .kube/config
-                    helm -n staging upgrade --install movie-db --values=movie-db-helm/values.yml
-                    helm -n staging upgrade --install cast-db --values=cast-db-helm/values.yml
-                    helm -n staging upgrade --install movie-service --values=movie-helm/values.yml
-                    helm -n staging upgrade --install cast-service --values=cast-helm/values.yml
-                    helm -n staging upgrade --install nginx-service --values=nginx-helm/values.yml
+                    helm -n staging upgrade --install movie-db --values movie-db-helm/values.yml movie-db-helm/
+                    helm -n staging upgrade --install cast-db --values cast-db-helm/values.yml cast-db-helm/
+                    helm -n staging upgrade --install movie-service --values movie-helm/values.yml movie-helm/
+                    helm -n staging upgrade --install cast-service --values cast-helm/values.yml cast-helm/
+                    helm -n staging upgrade --install nginx-service --values nginx-helm/values.yml nginx-helm/
                     '''
                 }
             }
@@ -165,11 +165,11 @@ pipeline {
                     rm -Rf .kube
                     mkdir .kube
                     cat $KUBECONFIG > .kube/config
-                    helm -n prod upgrade --install movie-db --values=movie-db-helm/values.yml
-                    helm -n prod upgrade --install cast-db --values=cast-db-helm/values.yml
-                    helm -n prod upgrade --install movie-service --values=movie-helm/values.yml
-                    helm -n prod upgrade --install cast-service --values=cast-helm/values.yml
-                    helm -n prod upgrade --install nginx-service --values=nginx-helm/values.yml
+                    helm -n prod upgrade --install movie-db --values movie-db-helm/values.yml movie-db-helm/
+                    helm -n prod upgrade --install cast-db --values cast-db-helm/values.yml cast-db-helm/
+                    helm -n prod upgrade --install movie-service --values movie-helm/values.yml movie-helm/
+                    helm -n prod upgrade --install cast-service --values cast-helm/values.yml cast-helm/
+                    helm -n prod upgrade --install nginx-service --values nginx-helm/values.yml nginx-helm/
                     '''
                 }
             }
