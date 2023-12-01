@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: p0l1na/jenkins_fastapi_movies
+  repository: p0l1na/movie-service
   tag: ""
 
 service:
