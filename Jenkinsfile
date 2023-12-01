@@ -127,7 +127,7 @@ pipeline {
                     helm -n qa upgrade --install cast-db --values cast-db-helm/values.yaml cast-db-helm/
                     helm -n qa upgrade --install movie-service --values movie-helm/values.yaml movie-helm/
                     helm -n qa upgrade --install cast-service  --values cast-helm/values.yaml cast-helm/
-                    helm -n qa upgrade --install nginx-service --values nginx-helm/values.yaml nginx-helm/
+                    helm -n qa upgrade --install nginx-service --values nginx-helm/values.yaml --set service.nodePort=30082 nginx-helm/
                     '''
                 }
             }
@@ -146,7 +146,7 @@ pipeline {
                     helm -n staging upgrade --install cast-db --values cast-db-helm/values.yaml cast-db-helm/
                     helm -n staging upgrade --install movie-service --values movie-helm/values.yaml movie-helm/
                     helm -n staging upgrade --install cast-service --values cast-helm/values.yaml cast-helm/
-                    helm -n staging upgrade --install nginx-service --values nginx-helm/values.yaml nginx-helm/
+                    helm -n staging upgrade --install nginx-service --values nginx-helm/values.yaml --set service.nodePort=30084 nginx-helm/
                     '''
                 }
             }
@@ -168,7 +168,7 @@ pipeline {
                     helm -n prod upgrade --install cast-db --values cast-db-helm/values.yaml cast-db-helm/
                     helm -n prod upgrade --install movie-service --values movie-helm/values.yaml movie-helm/
                     helm -n prod upgrade --install cast-service --values cast-helm/values.yaml cast-helm/
-                    helm -n prod upgrade --install nginx-service --values nginx-helm/values.yaml nginx-helm/
+                    helm -n prod upgrade --install nginx-service --values nginx-helm/values.yaml --set service.nodePort=30086 nginx-helm/
                     '''
                 }
             }
