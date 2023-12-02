@@ -106,8 +106,8 @@ pipeline {
                     cat $KUBECONFIG > .kube/config
                     helm -n dev upgrade --install movie-db --values movie-db-helm/values.yaml movie-db-helm/
                     helm -n dev upgrade --install cast-db --values cast-db-helm/values.yaml cast-db-helm/
-                    helm -n dev upgrade --install movie-service --values movie-helm/values.yaml movie-helm/
-                    helm -n dev upgrade --install cast-service --values cast-helm/values.yaml cast-helm/
+                    helm -n dev upgrade --install movie-service --values movie-helm/values.yaml --set image.repository=$DOCKER_ID/$DOCKER_MOVIE_IMAGE --set image.tag=$DOCKER_TAG movie-helm/
+                    helm -n dev upgrade --install cast-service --values cast-helm/values.yaml --set image.repository=$DOCKER_ID/$DOCKER_CAST_IMAGE --set image.tag=$DOCKER_TAG cast-helm/
                     helm -n dev upgrade --install nginx-service --values nginx-helm/values.yaml nginx-helm/
                     '''
                 }
@@ -125,8 +125,8 @@ pipeline {
                     cat $KUBECONFIG > .kube/config
                     helm -n qa upgrade --install movie-db --values movie-db-helm/values.yaml movie-db-helm/
                     helm -n qa upgrade --install cast-db --values cast-db-helm/values.yaml cast-db-helm/
-                    helm -n qa upgrade --install movie-service --values movie-helm/values.yaml movie-helm/
-                    helm -n qa upgrade --install cast-service  --values cast-helm/values.yaml cast-helm/
+                    helm -n qa upgrade --install movie-service --values movie-helm/values.yaml --set image.repository=$DOCKER_ID/$DOCKER_MOVIE_IMAGE --set image.tag=$DOCKER_TAG movie-helm/
+                    helm -n qa upgrade --install cast-service  --values cast-helm/values.yaml --set image.repository=$DOCKER_ID/$DOCKER_CAST_IMAGE --set image.tag=$DOCKER_TAG cast-helm/
                     helm -n qa upgrade --install nginx-service --values nginx-helm/values.yaml --set service.nodePort=30082 nginx-helm/
                     '''
                 }
@@ -144,8 +144,8 @@ pipeline {
                     cat $KUBECONFIG > .kube/config
                     helm -n staging upgrade --install movie-db --values movie-db-helm/values.yaml movie-db-helm/
                     helm -n staging upgrade --install cast-db --values cast-db-helm/values.yaml cast-db-helm/
-                    helm -n staging upgrade --install movie-service --values movie-helm/values.yaml movie-helm/
-                    helm -n staging upgrade --install cast-service --values cast-helm/values.yaml cast-helm/
+                    helm -n staging upgrade --install movie-service --values movie-helm/values.yaml --set image.repository=$DOCKER_ID/$DOCKER_MOVIE_IMAGE --set image.tag=$DOCKER_TAG movie-helm/
+                    helm -n staging upgrade --install cast-service --values cast-helm/values.yaml --set image.repository=$DOCKER_ID/$DOCKER_CAST_IMAGE --set image.tag=$DOCKER_TAG cast-helm/
                     helm -n staging upgrade --install nginx-service --values nginx-helm/values.yaml --set service.nodePort=30084 nginx-helm/
                     '''
                 }
@@ -166,8 +166,8 @@ pipeline {
                     cat $KUBECONFIG > .kube/config
                     helm -n prod upgrade --install movie-db --values movie-db-helm/values.yaml movie-db-helm/
                     helm -n prod upgrade --install cast-db --values cast-db-helm/values.yaml cast-db-helm/
-                    helm -n prod upgrade --install movie-service --values movie-helm/values.yaml movie-helm/
-                    helm -n prod upgrade --install cast-service --values cast-helm/values.yaml cast-helm/
+                    helm -n prod upgrade --install movie-service --values movie-helm/values.yaml --set image.repository=$DOCKER_ID/$DOCKER_MOVIE_IMAGE --set image.tag=$DOCKER_TAG movie-helm/
+                    helm -n prod upgrade --install cast-service --values cast-helm/values.yaml --set image.repository=$DOCKER_ID/$DOCKER_CAST_IMAGE --set image.tag=$DOCKER_TAG cast-helm/
                     helm -n prod upgrade --install nginx-service --values nginx-helm/values.yaml --set service.nodePort=30086 nginx-helm/
                     '''
                 }
