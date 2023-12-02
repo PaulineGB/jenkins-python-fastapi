@@ -167,7 +167,7 @@ pipeline {
                     helm -n prod upgrade --install movie-db --values movie-db-helm/values.yaml movie-db-helm/
                     helm -n prod upgrade --install cast-db --values cast-db-helm/values.yaml cast-db-helm/
                     helm -n prod upgrade --install movie-service --values movie-helm/values.yaml --set image.repository=$DOCKER_ID/$DOCKER_MOVIE_IMAGE --set image.tag=$DOCKER_TAG movie-helm/
-                    helm -n prod upgrade --install cast-service --values cast-helm/values.yaml --set image.repository=$DOCKER_ID/$DOCKER_CAST_IMAGE --set image.tag=$DOCKER_TAG .cast-helm/
+                    helm -n prod upgrade --install cast-service --values cast-helm/values.yaml --set image.repository=$DOCKER_ID/$DOCKER_CAST_IMAGE --set image.tag=$DOCKER_TAG cast-helm/
                     helm -n prod upgrade --install nginx-service --values nginx-helm/values.yaml --set service.nodePort=30086 nginx-helm/
                     '''
                 }
